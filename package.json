@@ -1,0 +1,17 @@
+{
+  "name": "string-wrapper",
+  "main": "./lib/string-wrapper",
+  "version": "0.0.0",
+  "description": "Basic string making methods",
+  "activationEvents": [
+    "string-wrapper:single-str",
+    "string-wrapper:double-str"
+  ],
+  "repository": "https://github.com/atom/string-wrapper",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}

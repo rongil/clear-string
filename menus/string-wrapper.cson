@@ -9,7 +9,8 @@
     'submenu': [
       'label': 'String Wrapper'
       'submenu': [
-        { 'label': 'Toggle', 'command': 'string-wrapper:toggle' }
+        {'label': 'Single Quote', 'command': 'string-wrapper:single-str'}
+        {'label': 'Double Quote', 'command': 'string-wrapper:double-str'}
       ]
     ]
   }

@@ -2,12 +2,12 @@
   "name": "string-wrapper",
   "main": "./lib/string-wrapper",
   "version": "0.0.0",
-  "description": "Basic string making methods",
+  "description": "Basic string making methods using keyboard shortcuts.",
   "activationEvents": [
     "string-wrapper:single-str",
     "string-wrapper:double-str"
   ],
-  "repository": "https://github.com/atom/string-wrapper",
+  "repository": "https://github.com/rongil/string-wrapper",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

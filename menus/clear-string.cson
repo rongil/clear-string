@@ -1,0 +1,17 @@
+# See https://atom.io/docs/latest/creating-a-package#menus for more details
+'context-menu':
+  '.overlayer':
+    'Enable clear-string': 'clear-string:toggle'
+
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Clear String'
+      'submenu': [
+        {'label': 'Single Quote', 'command': 'clear-string:single-str'}
+        {'label': 'Double Quote', 'command': 'clear-string:double-str'}
+      ]
+    ]
+  }
+]

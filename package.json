@@ -1,13 +1,13 @@
 {
-  "name": "string-wrapper",
-  "main": "./lib/string-wrapper",
+  "name": "clear-string",
+  "main": "./lib/clear-string",
   "version": "0.0.0",
-  "description": "Basic string making methods using keyboard shortcuts.",
+  "description": "Remove string keyboard shortcut.",
   "activationEvents": [
-    "string-wrapper:single-str",
-    "string-wrapper:double-str"
+    "clear-string:single-str",
+    "clear-string:double-str"
   ],
-  "repository": "https://github.com/rongil/string-wrapper",
+  "repository": "https://github.com/rongil/clear-string",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"

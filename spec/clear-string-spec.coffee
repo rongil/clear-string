@@ -120,7 +120,7 @@ describe "ClearString", ->
           expect(editor.lineForBufferRow(10)).toBe \
             "'This' really 'is' Test7"
 
-    describe "when there are block strings in range", ->
+    describe "when there is a block string in range", ->
       describe "when the single quote command is called", ->
         it "does nothing", ->
           editor.setSelectedBufferRange([[11,0], [11,19]])

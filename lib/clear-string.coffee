@@ -31,13 +31,14 @@ stringCheck = (quoteType, editor) ->
       selRange = selection.getBufferRange()
       # Check if the cursor is next to or within a string
       range = dispBuffer.bufferRangeForScopeAtPosition(strType, selRange.start)
+      console.log editor.scopesForBufferPosition(selRange.start).toString()
       if range? then result = stringClear(editor, position, quoteRegex, range)
       # Check the rest of the selection for more strings (if not empty)
       unless selection.isEmpty()
         # Keep checking for strings within the selected text
         range = stringSearch(dispBuffer, editor, position, selRange, strType)
         while range?
-          result = stringClear(editor, position, quoteRegex, range)
+          break unless result = stringClear(editor, position, quoteRegex, range)
           range = stringSearch(dispBuffer, editor, position, selRange, strType)
         # If there were no results, reset the selection
         unless result?
@@ -47,13 +48,12 @@ stringClear = (editor, position, quoteRegex, range) ->
   # Check if it's a block string or a regular string
   scope = editor.scopesForBufferPosition(range.start).toString()
   blockString = /block/.test(scope)
-  numQuotes = if blockString then 3 else 1
 
   # Watch for problems with a string wrapped in multiple lines
   begRange = editor.clipBufferRange([range.start, range.start.add([0,1])])
   endRange = editor.clipBufferRange([range.end.add([0,-1]), range.end])
   # Condition for no selection
-  unless begRange.isEqual(endRange)
+  unless begRange.isEqual(endRange) or blockString
     # Check that the characters to be removed are actually quotes
     left = quoteRegex.test(editor.getTextInBufferRange(begRange))
     right = quoteRegex.test(editor.getTextInBufferRange(endRange))
@@ -73,6 +73,8 @@ stringClear = (editor, position, quoteRegex, range) ->
     # If it is the end of the line or there is a multiline string, move down
     if EOL or multi
       newPos = range.end.translate([1,-Infinity])
+      # Return without any action if the end of the buffer is reached
+      return if newPos.row > editor.getLastBufferRow()
       position = editor.clipBufferPosition(newPos)
     # If a block string, move past it
     else if blockString then position = range.end.add([0, 1])

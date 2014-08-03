@@ -7,7 +7,7 @@ describe "ClearString", ->
 
     beforeEach ->
       waitsForPromise ->
-        atom.packages.activatePackage('language-javascript')
+        atom.packages.activatePackage('language-python')
 
       runs ->
         testString = """
@@ -18,10 +18,11 @@ describe "ClearString", ->
           'This'\n'is'\n'Test5'
           "This"\n"is"\n"Test6"
           'This' "really" 'is' "Test7"
+          '''This is''' \"""Test8\"""
         """
         buffer = atom.project.buildBufferSync()
         editor = atom.project.buildEditorForBuffer(buffer)
-        editor.setGrammar(atom.syntax.selectGrammar('.js'))
+        editor.setGrammar(atom.syntax.selectGrammar('.py'))
         editor.setText(testString)
 
     describe "when the cursor is within a single quoted string", ->
@@ -73,7 +74,7 @@ describe "ClearString", ->
           stringCheck('double', editor)
           expect(editor.lineForBufferRow(3)).toBe "This is Test4"
 
-    describe "when the text highlighted multiple single quoted strings", ->
+    describe "when the text highlighted has multiple single quoted strings", ->
       describe "when the single quote command is called", ->
         it "removes the quotes from all the single quoted strings", ->
           editor.setSelectedBufferRange([[4,0], [6,7]])
@@ -89,7 +90,7 @@ describe "ClearString", ->
           expect(editor.lineForBufferRow(5)).toBe "'is'"
           expect(editor.lineForBufferRow(6)).toBe "'Test5'"
 
-    describe "when the text highlighted multiple double quoted strings", ->
+    describe "when the text highlighted has multiple double quoted strings", ->
       describe "when the single quote command is called", ->
         it "does nothing", ->
           editor.setSelectedBufferRange([[7,0], [9,7]])
@@ -118,3 +119,17 @@ describe "ClearString", ->
           stringCheck('double', editor)
           expect(editor.lineForBufferRow(10)).toBe \
             "'This' really 'is' Test7"
+
+    describe "when there are block strings in range", ->
+      describe "when the single quote command is called", ->
+        it "does nothing", ->
+          editor.setSelectedBufferRange([[11,0], [11,19]])
+          stringCheck('single', editor)
+          expect(editor.lineForBufferRow(11)).toBe \
+            "'''This is''' \"\"\"Test8\"\"\""
+      describe "when the double quote command is called", ->
+        it "does nothing", ->
+          editor.setSelectedBufferRange([[11,0], [11,19]])
+          stringCheck('double', editor)
+          expect(editor.lineForBufferRow(11)).toBe \
+            "'''This is''' \"\"\"Test8\"\"\""

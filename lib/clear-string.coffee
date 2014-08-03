@@ -11,10 +11,8 @@ module.exports =
 stringCheck = (quoteType, editor) ->
   # Unless an editor was provided, get the active editor
   editor = atom.workspace.getActiveEditor() unless editor?
-  position = null
   dispBuffer = editor.displayBuffer
   quoteRegex = if quoteType is 'double' then /"/ else /'/
-  result = null
   strType = 'string.quoted.' + quoteType
 
   ###
@@ -31,13 +29,13 @@ stringCheck = (quoteType, editor) ->
       selRange = selection.getBufferRange()
       # Check if the cursor is next to or within a string
       range = dispBuffer.bufferRangeForScopeAtPosition(strType, selRange.start)
-      console.log editor.scopesForBufferPosition(selRange.start).toString()
       if range? then result = stringClear(editor, position, quoteRegex, range)
       # Check the rest of the selection for more strings (if not empty)
       unless selection.isEmpty()
         # Keep checking for strings within the selected text
         range = stringSearch(dispBuffer, editor, position, selRange, strType)
         while range?
+          # stringClear returns nothing if it hits the end of the buffer
           break unless result = stringClear(editor, position, quoteRegex, range)
           range = stringSearch(dispBuffer, editor, position, selRange, strType)
         # If there were no results, reset the selection

@@ -12,6 +12,7 @@ stringCheck = (quoteType, editor) ->
   # Unless an editor was provided, get the active editor
   editor = atom.workspace.getActiveEditor() unless editor?
   dispBuffer = editor.displayBuffer
+  position = {}
   quoteRegex = if quoteType is 'double' then /"/ else /'/
   strType = 'string.quoted.' + quoteType
 
@@ -65,35 +66,39 @@ stringClear = (editor, position, quoteRegex, range) ->
     # Set variable to show that there was action taken
     return true
   # If searching through results, adjust the position accordingly
-  if position?
+  if position.pos?
     # Check for end of line
-    EOL = position.isEqual(editor.clipBufferPosition(position.add([0,1])))
+    EOL = position.pos.isEqual(
+      editor.clipBufferPosition(position.pos.add([0,1]))
+    )
     # If it is the end of the line or there is a multiline string, move down
     if EOL or multi
       newPos = range.end.translate([1,-Infinity])
       # Return without any action if the end of the buffer is reached
       return if newPos.row > editor.getLastBufferRow()
-      position = editor.clipBufferPosition(newPos)
+      position.pos = editor.clipBufferPosition(newPos)
     # If a block string, move past it
-    else if blockString then position = range.end.add([0, 1])
+    else if blockString then position.pos = range.end.add([0, 1])
     # Otherwise account for the removed characters
-    else position = range.end.add([0,-2])
+    else position.pos = range.end.add([0,-2])
 
 stringSearch = (displayBuffer, editor, position, selRange, strType) ->
   # Set the position to the start of the selected text,
   # if this is the first time
-  position = selRange.start unless position?
+  position.pos = selRange.start unless position.pos?
   # Loop through the selected text
-  until position.isGreaterThanOrEqual(selRange.end)
+  until position.pos.isGreaterThanOrEqual(selRange.end)
     # If a string is found, stop looping and return its range
     range = displayBuffer.bufferRangeForScopeAtPosition(
-      strType, position)
+      strType, position.pos)
     if range then return range
     # If you hit the margin, move down
-    if position.isEqual(editor.clipBufferPosition(position.add([0,1])))
-      newPos = position.translate([1, -Infinity])
+    if position.pos.isEqual(
+      editor.clipBufferPosition(position.pos.add([0,1]))
+    )
+      newPos = position.pos.translate([1, -Infinity])
       # End the loop if the end of the buffer is reached
       break if newPos.row > editor.getLastBufferRow()
-      position = editor.clipBufferPosition(newPos)
+      position.pos = editor.clipBufferPosition(newPos)
     # Otherwise keep moving right
-    else position = position.add([0,1])
+    else position.pos = position.pos.add([0,1])
